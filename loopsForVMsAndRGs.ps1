@@ -8,23 +8,26 @@ is to fix it.
 
 #>
 
+
+
+
+## Working Version.  Will remove VMs.
 $vms = get-azvm
 $VMName = $vms.Name
-
 $VMName
-
 foreach ($actualVM in $VMName)  
 
 {
  If($actualVM -eq 'freeTierVM1'){continue}
  else
- {remove-azvm -Name $actualVM -verbose -force}
-
+ #{remove-azvm -Name $actualVM -verbose -force}
+ {write-host "VM is $($actualVM)"}
 };
 
 
 ##This powershell script will remove all resource groups and associated items except 
-##the ones  after the -ne line
+##the ones  after the -ne line.
+##This is the non working version we can fix
 $azrg = Get-AzResourceGroup
 if ($azrg.Count > 0)
 {write-host "WARNING! COUNT GREATER THAN 0. TOTAL COUNT:$($azrg.count)" -ForegroundColor darkred}
@@ -38,3 +41,15 @@ write-host "Current ResourceGroup Discovered: $($currentItem)"
 
 
 
+
+##And a working version of removing resource groups using the first method.
+$azrg = Get-AzResourceGroup
+if ($azrg.Count > 0)
+{write-host "WARNING! COUNT GREATER THAN 0. TOTAL COUNT:$($azrg.count)" -ForegroundColor darkred}
+foreach ($currentItem in $($azrg.ResourceGroupName))
+{
+ If($currentItem -eq 'FreeTier'){continue}
+write-host "Current ResourceGroup Discovered: $($currentItem)"
+
+#remove-azresourcegroup -name $currentItem -verbose -force
+}
