@@ -46,10 +46,13 @@ write-host "Current ResourceGroup Discovered: $($currentItem)"
 $azrg = Get-AzResourceGroup
 if ($azrg.Count > 0)
 {write-host "WARNING! COUNT GREATER THAN 0. TOTAL COUNT:$($azrg.count)" -ForegroundColor darkred}
+
 foreach ($currentItem in $($azrg.ResourceGroupName))
 {
- If($currentItem -eq 'FreeTier'){continue}
+ If($currentItem -eq ('FreeTier')){continue} 
+ If($currentItem -eq ('cloudShellAcct')){continue} 
+ If($currentItem -eq ('cloud-shell-storage-westus')){continue} 
+ If($currentItem -eq ('Default-ActivityLogAlerts')){continue} 
 write-host "Current ResourceGroup Discovered: $($currentItem)"
-
-#remove-azresourcegroup -name $currentItem -verbose -force
+remove-azresourcegroup -name $currentItem -verbose -force
 }
