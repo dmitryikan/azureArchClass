@@ -18,7 +18,7 @@ Dark Red Reply = Bad
 ########################################################################################################################
 ########################################################################################################################
 " -ForegroundColor Cyan  
-
+########################################################################################
 
 
 
@@ -32,6 +32,15 @@ $vnetRGLoc = $vnetLoc  ## Company Policy: All VNets must be in the same location
 $vnetName = 'PacktLBVnet'
 $vnetAddressPrefix = '172.16.0.0/16'
 $subnetName = 'PacktLBBackendSubnet'
+
+## Load Balancers
+$LBName = $vnetRGName
+$LBLocation = $vnetLoc
+$LBRG  = $vnetRGName
+$LBVN = $vnetName
+$LBSubnet = $subnetName
+$PrivIPSpace = '172.16.0.1'
+
 
 ##################################### VM Variables #########################################
 $VMRG = $vnetRGName ##Company policy dictates all machines be in the RG as their NIC
@@ -194,4 +203,19 @@ New-AzVm `
         -AvailabilitySetName "$($ASName)" `
         -Credential $cred | out-null
 } 
+
+
+
+
+
+
+
+
+### Load Balancers for VMs
+
+<#
+#>
+$doesLBExist = Get-AzLoadBalancer -Name $($LBName) -ResourceGroupName $($LBRG) | select-object {$_.Name} #| out-null   ##Will have to look into why this requires a select-object. 
+if ($doesLBExist){write-host "LB $($LBName) exists." -ForegroundColor Green}
+else {write-host "creating LB $($LBName)" -ForegroundColor Yellow; New-AzLoadBalancer -ResourceGroupName $($LBRG) -Name $($LBName) -Location $($LBLocation) -Sku "Basic" | out-null}
 
