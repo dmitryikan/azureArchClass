@@ -5,8 +5,15 @@
 
 <#
 This top part is only for getting resource groups and such.  
-To create the virtual networks, subnets, and associate them together look at the $virtualNetwork part and below
+To create the virtual networks, subnets, and associate them together look at the $virtualNetwork part and below.
+
+
 #>
+
+
+<#
+
+##NOT NEEDED. COMMENTING OUT.
 $RGName = 'FreeTier'
 $getRG = Get-AzResourceGroup | Where-object {$_.ResourceGroupName -eq $($RGName)} | select-object {$_.ResourceGroupName}
 
@@ -21,14 +28,19 @@ $MyRes = Get-AzResourceGroup -Name "FreeTier"
 if ($null = $MyRes) {
  write-host "does not exist"
 }
+#>
 
 
-
+$vnetName = 'PacktLBVnet'
+$doesNetworkExist = get-azvirtualnetwork | Where-Object {$_.Name -eq $($VnetName)} | select-object {$_.Name}
+if ($doesNetworkExist) {write-host "VNet $($VnetName) exists. Not creating"} 
+else {
 $virtualNetwork = New-AzVirtualNetwork `
   -ResourceGroupName PacktLoadBalancer `
   -Location EastUS `
   -Name PacktLBVnet `
   -AddressPrefix 172.16.0.0/16
+}
 
 
   $subnetConfig = Add-AzVirtualNetworkSubnetConfig `
