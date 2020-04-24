@@ -37,6 +37,7 @@ $subnetName = 'PacktLBBackendSubnet'
 $VMRG = $vnetRGName ##Company policy dictates all machines be in the RG as their NIC
 $VM1Name = 'PacktLBVM1'
 $VM2Name = 'PacktLBVM2'
+$VM3Name = 'PacktLBVMTest'
 $VMLocation = 'EastUS'
 #$VMPassword = 'Assword1234!'
 #$VMcredential = New-Object System.Management.Automation.PSCredential ('oitadmin', $VMPassword)
@@ -142,7 +143,8 @@ $doesVMExist = get-azvm -Name $($VM1Name)
 if ($doesVMExist) {write-host "VM Found named: $($VM1Name). Continuing" -foreground Green}
 else
 {
-$Cred = get-credential
+write-host "vm does not exist. Creating now." -ForegroundColor Yellow
+#$Cred = get-credential          #UNCOMMENT!
 New-AzVm `
         -ResourceGroupName "$($VMRG)" `
         -Name "$($VM1Name)" `
@@ -151,7 +153,7 @@ New-AzVm `
         -SubnetName "$($subnetName)" `
         -SecurityGroupName "NSG" `
         -AvailabilitySetName "$($ASName)" `
-        -Credential $cred 
+        -Credential $cred | out-null
 }
 
 
@@ -162,6 +164,7 @@ $doesVMExist = get-azvm -Name $($VM2Name)
 if ($doesVMExist) {write-host "VM Found named: $($VM2Name). Continuing" -foreground Green}
 else
 {
+write-host "vm does not exist. Creating now." -ForegroundColor Yellow
 New-AzVm `
         -ResourceGroupName "$($VMRG)" `
         -Name "$($VM2Name)" `
@@ -170,5 +173,25 @@ New-AzVm `
         -SubnetName "$($subnetName)" `
         -SecurityGroupName "NSG" `
         -AvailabilitySetName "$($ASName)" `
-        -Credential $cred 
-}
+        -Credential $cred | out-null
+} 
+
+
+
+## Does vm exist?
+$doesVMExist = get-azvm -Name $($VM3Name) 
+if ($doesVMExist) {write-host "VM Found named: $($VM3Name). Continuing" -foreground Green}
+else
+{
+write-host "vm does not exist. Creating now." -ForegroundColor Yellow
+New-AzVm `
+        -ResourceGroupName "$($VMRG)" `
+        -Name "$($VM3Name)" `
+        -Location "$($VMLocation)" `
+        -VirtualNetworkName "$($vnetName)" `
+        -SubnetName "$($subnetName)" `
+        -SecurityGroupName "NSG" `
+        -AvailabilitySetName "$($ASName)" `
+        -Credential $cred | out-null
+} 
+
