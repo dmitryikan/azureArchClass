@@ -1,0 +1,2 @@
+#The Azure subscription details will be saved in the MyAzureProfile.json file
+Save-AzProfile -Path <Path of Profile >MyAzureProfile.json
